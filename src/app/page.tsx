@@ -1,8 +1,7 @@
 "use client";
 
 import { Add } from "@mui/icons-material";
-import { IconButton } from "@mui/material";
-import Image from "next/image";
+import { Button, IconButton } from "@mui/material";
 import { useState } from "react";
 
 export default function Home() {
@@ -71,6 +70,17 @@ export default function Home() {
               <li key={url}>{url}</li>
             ))}
           </ul>
+          <Button
+            className="text-black bg-white hover:text-white mt-4"
+            variant="contained"
+            onClick={async () => {
+              const response = await (await fetch("/api/downloadmp3")).json();
+
+              console.log(response);
+            }}
+          >
+            Contained
+          </Button>
         </section>
       </div>
       <p className="font-extralight">YouTube URL to MP3 Converter</p>
