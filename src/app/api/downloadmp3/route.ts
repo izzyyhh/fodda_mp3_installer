@@ -1,16 +1,44 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { NextResponse } from "next/server";
-import fs from "fs";
+import fs, { createWriteStream } from "fs";
 import ytdl from "ytdl-core";
+import ffmpeg from "fluent-ffmpeg";
 
 export async function GET() {
   return NextResponse.json({ download: "siu" });
 }
 
-export async function POST(request: NextApiRequest, response: NextApiResponse) {
-  const topGURL = "https://www.youtube.com/watch?v=jOTeBVtlnXU";
+export async function POST(request: Request, response: NextApiResponse) {
+  const body: { urls: string[] } = await request.json();
+  const downloadDir = "./downloads";
 
-  ytdl(topGURL).pipe(fs.createWriteStream("topG.mp4"));
+  if (!fs.existsSync(downloadDir)) {
+    fs.mkdirSync(downloadDir);
+  }
 
-  return NextResponse.json({ download: "siu" });
+  const ytdlOptions: ytdl.downloadOptions = {
+    quality: "highestaudio",
+    filter: "audioonly",
+  };
+
+  if (body.urls && body.urls.length > 0) {
+    body.urls.forEach(async (url) => {
+      const info = await ytdl.getInfo(url);
+      const ytStream = ytdl(url, ytdlOptions);
+
+      console.log("downloading:", info.videoDetails.title);
+
+      const ffmpegConvert = ffmpeg(ytStream)
+        .format("mp3")
+        .pipe(
+          createWriteStream(`${downloadDir}/${info.videoDetails.title}.mp3`)
+        );
+
+      ffmpegConvert.on("finish", () => {
+        console.log("finished downloading " + info.videoDetails.title);
+      });
+    });
+  }
+
+  return NextResponse.json({ download: "siu", pending: true });
 }

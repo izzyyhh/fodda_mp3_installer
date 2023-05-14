@@ -74,12 +74,18 @@ export default function Home() {
             className="text-black bg-white hover:text-white mt-4"
             variant="contained"
             onClick={async () => {
-              const response = await (await fetch("/api/downloadmp3")).json();
+              const response = await fetch("/api/downloadmp3", {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ urls: urlList }),
+              });
 
               console.log(response);
             }}
           >
-            Contained
+            Download
           </Button>
         </section>
       </div>
