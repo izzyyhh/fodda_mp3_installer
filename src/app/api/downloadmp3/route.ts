@@ -37,7 +37,14 @@ export async function POST(request: Request, response: NextApiResponse) {
       ffmpegConvert.on("finish", () => {
         console.log("finished downloading " + info.videoDetails.title);
       });
+
+      ffmpegConvert.on("error", (e) => {
+        console.log(e);
+        response.status(500).json({ error: e });
+      });
     });
+  } else {
+    return NextResponse.json({ error: "urls empty" });
   }
 
   return NextResponse.json({ download: "siu", pending: true });
