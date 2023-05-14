@@ -12,9 +12,6 @@ const nextConfig = {
     );
     return config;
   },
-  api: {
-    bodyParser: true,
-  },
 };
 
 module.exports = nextConfig;
