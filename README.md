@@ -2,6 +2,20 @@ This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next
 
 ## Fian Fodda
 
+# with Docker
+
+To build:
+
+```bash
+docker build -t ${your_tag_here} .
+```
+
+To run:
+
+```bash
+docker run -v $(pwd)/downloads:/app/downloads -p 3000:3000 ${your_tag_here}
+```
+
 First, run the development server:
 
 ```bash
