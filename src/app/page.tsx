@@ -2,11 +2,12 @@
 
 import { Add } from "@mui/icons-material";
 import { Button, IconButton } from "@mui/material";
-import { useState } from "react";
+import { useRef, useState } from "react";
 
 export default function Home() {
   const [urlInput, setUrlInput] = useState("");
-  const [urlList, setUrlList] = useState<string[]>([]);
+  const [infoList, setInfoList] = useState<string[]>([]);
+  const urlList = useRef<string[]>([]);
 
   return (
     <main className="flex min-h-screen flex-col items-center justify-between p-24">
@@ -35,16 +36,31 @@ export default function Home() {
               <label htmlFor="url" className="relative">
                 <IconButton
                   className=" absolute right-[-1ch] bottom-[-8px] z-50 bg-white hover:bg-slate-400"
-                  onClick={() => {
+                  onClick={async () => {
                     if (
                       urlInput != "" &&
                       isUrl(urlInput) &&
-                      !urlList.includes(urlInput)
+                      !urlList.current.includes(urlInput)
                     ) {
-                      const newUrlList = [...urlList, urlInput];
-                      setUrlList(newUrlList);
+                      const newUrlList = [...urlList.current, urlInput];
+                      urlList.current = newUrlList;
+                      setUrlInput("");
+
+                      try {
+                        const res = await fetch("/api/getinfo", {
+                          method: "POST",
+                          headers: {
+                            "Content-Type": "application/json",
+                          },
+                          body: JSON.stringify({ urls: newUrlList }),
+                        });
+                        const result = (await res.json()) as { info: string[] };
+                        console.log(result);
+                        setInfoList(result.info);
+                      } catch (e) {
+                        console.log(e);
+                      }
                     }
-                    setUrlInput("");
                   }}
                 >
                   <Add className="text-black "></Add>
@@ -66,23 +82,24 @@ export default function Home() {
         <section className="pt-5">
           <h3>të zgjedhura</h3>
           <ul>
-            {urlList.map((url) => (
-              <li key={url}>{url}</li>
+            {infoList.map((info) => (
+              <li key={info}>{info}</li>
             ))}
           </ul>
           <Button
             className="text-black bg-white hover:text-white mt-4"
             variant="contained"
             onClick={async () => {
+              console.log(`downloading: ${urlList.current}`);
               const response = await fetch("/api/downloadmp3", {
                 method: "POST",
                 headers: {
                   "Content-Type": "application/json",
                 },
-                body: JSON.stringify({ urls: urlList }),
+                body: JSON.stringify({ urls: urlList.current }),
               });
 
-              console.log(response);
+              console.log(await response.json());
             }}
           >
             Download
