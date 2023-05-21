@@ -14,8 +14,16 @@ docker build -t ${your_tag_here} .
 
 To run:
 
+Linux
+
 ```bash
 docker run -v $(pwd)/downloads:/app/downloads -p 3000:3000 ${your_tag_here}
+```
+
+Windows
+
+```powershell
+docker run -v %cd%\downloads:/app/downloads -p 3000:3000 ${your_tag_here}
 ```
 
 ## Or, run the development server:
