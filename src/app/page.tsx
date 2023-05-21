@@ -43,6 +43,7 @@ export default function Home() {
                       !urlList.current.includes(urlInput)
                     ) {
                       const newUrlList = [...urlList.current, urlInput];
+                      console.log("new url list", newUrlList);
                       urlList.current = newUrlList;
                       setUrlInput("");
 

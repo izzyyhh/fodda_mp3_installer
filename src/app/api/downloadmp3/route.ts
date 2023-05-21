@@ -40,7 +40,7 @@ export async function POST(request: Request, response: NextApiResponse) {
 
       ffmpegConvert.on("error", (e) => {
         console.log(e);
-        response.status(500).json({ error: e });
+        NextResponse.json({ error: e });
       });
     });
   } else {
