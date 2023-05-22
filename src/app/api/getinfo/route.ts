@@ -23,5 +23,3 @@ export async function POST(req: Request, res: NextApiResponse) {
     return NextResponse.json({ error: e });
   }
 }
-
-// TODO, spinner while getting info and feedback when downloaded
