@@ -82,3 +82,7 @@ You can check out [the Next.js GitHub repository](https://github.com/vercel/next
 
 - improve UI for mobile list, floating buttons and so on
 - list should not reload everytime, only add that item and get info only from that
+- refactor:
+  - websocket for download status
+  - code is in one file, extract components
+  - promises for downloading
